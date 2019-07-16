@@ -1,5 +1,4 @@
-# Perler bead Image Generator
-
-*It's only half working. Getting there tho!*
-
+# Image Neural Network Sim
+Readme TBC!
+Run with `http-server` (because of canvas CORS stuff!).
  - Dave
