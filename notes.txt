@@ -1,0 +1,2 @@
+
+should have option to specify number of times to REPEAT an individual image (clearing scores) for greater accuracy

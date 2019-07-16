@@ -1,0 +1,22 @@
+.blocky{
+display:block!important;
+}
+
+.is-fullwidth{
+    width:100%;
+}
+
+.pokey{
+	cursor:pointer;
+}
+.active-border{
+	border:2px solid #000;
+}
+.peg{
+	width:15px;
+	height:15px;
+	display:inline-block;
+	border-radius:50%;
+	border-width:10px;
+	border-style: solid;
+}

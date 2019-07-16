@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <title>Image Neural Network Experiment</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+</head>
+
+<body>
+    <div id="main">
+        <div class="columns">
+            <div class="column is-one-fifth"></div>
+            <div class="column is-three-fifths panel">
+                <div class="panel-heading has-background-link has-text-white has-text-centered has-text-weight-bold">
+                    Image Neural Network</div>
+                <div class="panel-block blocky">
+                    <div class='level is-fullwidth columns is-multiline'>
+                        <div class="column is-full">
+                            <div v-if='!doneLearning'>
+
+                                <canvas id="drawCanv" width='200' height='200' v-on:mousedown='drawOn = true' v-on:mouseup='drawOn=false;' v-on:mousemove='drawStuff' style='border:1px solid #333;'></canvas>
+                                <button class="button is-info" v-on:click='tryImg'>Test image</button>
+                            </div>
+                                <hr>{{rounds.total}}<br>
+                            <canvas v-bind:style='{width:img.w+"px",height:img.h+"px"}' id='canv' :width="img.w" :height="img.h"></canvas><br>
+                            {{score}}<br>
+                            Should be: {{img.shouldBe}}<br>
+                            Good: {{totalScores[0]}}<br>Bad: {{totalScores[1]}}<hr>
+                            <!-- Random Neuron strengths: {{brain.layers[1][2].outs.map(q=>q.strength)}} -->
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <button class="button" v-on:click='brainCycle()'>click</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- <script src="./js/store.js"></script> -->
+    <script src="./js/main.js"></script>
+</body>
+
+</html>
