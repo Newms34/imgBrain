@@ -7,38 +7,239 @@
 </head>
 
 <body>
-    <div id="main">
-        <div class="columns">
+    <div id="main" v-cloak>
+        <!-- <div class="neur-field" v-for='ly in brain.layers' v-if='showBrain'>
+            <div class="neur" v-for='n in ly' v-bind:style='{left:n.x+"%",top:n.y+"%"}' v-bind:class='{"active-neur":n.isOn}'></div>
+        </div> -->
+        <div class="columns" style='z-index:99;'>
             <div class="column is-one-fifth"></div>
             <div class="column is-three-fifths panel">
                 <div class="panel-heading has-background-link has-text-white has-text-centered has-text-weight-bold">
                     Image Neural Network</div>
-                <div class="panel-block blocky">
-                    <div class='level is-fullwidth columns is-multiline'>
+                <div class="panel-block blocky has-background-white">
+                    <div class='is-fullwidth columns is-multiline'>
+                        <div class="column is-full">&nbsp;</div>
+                        <div class="column is-one-fifth notification has-background-grey-dark has-text-white"
+                            v-if='!isLearning'>
+                            Network/Scan Setup
+                        </div>
+                        <div class="column is-four-fifths" v-if='!isLearning'>
+                            <table class="table is-bordered">
+                                <thead>
+                                    <tr class="has-background-grey has-text-boldy">
+                                        <th class='has-text-white'>
+                                            Item
+                                        </th>
+                                        <th class='has-text-white'>
+                                            Value
+                                        </th>
+                                        <th class='has-text-white'>
+                                            Explanation/Notes
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class='has-background-grey has-text-white' colspan='3'>Brain</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Number of Neurons
+                                        </td>
+                                        <td><input type="number" class="number" v-model.number='maxNeuros' min='0' max='10000'>
+                                        </td>
+                                        <td class='is-size-7'>The number of neurons in your brain. More <i>can</i> mean
+                                            a "smarter" brain, but it'll also run more slowly! Note: this
+                                            <i>does</i> include retinal neurons (the neurons used to "see" your image).
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Brain Layers
+                                        </td>
+                                        <td><input type="number" class="number" v-model.number='layers' min='1' max='100'></td>
+                                        <td class='is-size-7'>The number of layers in your brain. Any neuron in a
+                                            specific layer of the brain can <i>only</i> connect with neurons outside
+                                            that layer, so again, this increases complexity.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Percent Connections
+                                        </td>
+                                        <td><input type="number" class="number" v-model.number='percCons' min='0' max='100'>
+                                        </td>
+                                        <td class='is-size-7'>The percent of <i>total</i> neurons that this connects to.
+                                            Note: using a high percentage here may not always be a good thing!
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                            <td>
+                                                Total Connections
+                                            </td>
+                                            <td>{{totalNeuros}}
+                                            </td>
+                                            <td class='is-size-7'>Total number of connections (synapses) in your brain.
+                                            </td>
+                                        </tr>
+                                    <tr>
+                                        <td class='has-background-grey has-text-white' colspan='3'>Scanning</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Times to Repeat Image (per score)
+                                        </td>
+                                        <td><input type="number" class="number" v-model.number='rounds.roundsPerImgCycle'
+                                                min='1' max='100'></td>
+                                        <td class='is-size-7'>We can scan each image a bunch of times before we
+                                            calculate a score (think of it as "strengthening" the randomness of the
+                                            initial learning). How many times should we do this?
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Times to Repeat Image (getting multiple scores)
+                                        </td>
+                                        <td><input type="number" class="number" v-model.number='rounds.imgCycles' min='1'
+                                                max='100'></td>
+                                        <td class='is-size-7'>After the above is done, we'll calculate a score, and then
+                                            we can scan the <i>same</i> image again. How many times should we do this?
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br> <button class="button is-info is-large" v-on:click='createBrain()'>Create
+                                Brain!</button>
+                        </div>
                         <div class="column is-full">
-                            <div v-if='!doneLearning'>
-
-                                <canvas id="drawCanv" width='200' height='200' v-on:mousedown='drawOn = true' v-on:mouseup='drawOn=false;' v-on:mousemove='drawStuff' style='border:1px solid #333;'></canvas>
+                            <div v-if='doneLearning'>
+                                <canvas id="drawCanv" width='200' height='200' v-on:mousedown='drawOn = true'
+                                    v-on:mouseup='drawOn=false;' v-on:mousemove='drawStuff'
+                                    style='border:1px solid #333;'></canvas>
                                 <button class="button is-info" v-on:click='tryImg'>Test image</button>
                             </div>
-                                <hr>{{rounds.total}}<br>
-                            <canvas v-bind:style='{width:img.w+"px",height:img.h+"px"}' id='canv' :width="img.w" :height="img.h"></canvas><br>
-                            {{score}}<br>
-                            Should be: {{img.shouldBe}}<br>
-                            Good: {{totalScores[0]}}<br>Bad: {{totalScores[1]}}<hr>
-                            <!-- Random Neuron strengths: {{brain.layers[1][2].outs.map(q=>q.strength)}} -->
+                            <div v-if='!doneLearning && !!brainReady' class='is-fullwidth has-text-centered'>
+                                <button class="button is-info" v-on:click='learn'>Learn!</button>
+                            </div>
+                            <div v-if='isLearning' class='is-fullwidth has-text-centered'>
+                                <button class="button is-danger" v-on:click='emergencyStop=true'>Stop Learning!</button>
+                            </div>
+                            <input type="checkbox" v-model='showBrain'> Show neurons
+                        </div>
+                        <div class="column is-full" v-if='isLearning || doneLearning'>
+                            <table class="table is-fullwidth">
+                                <thead class='has-background-grey-darker has-text-white'>
+                                    <tr>
+                                        <th colspan='3'
+                                            class='is-size-4 has-background-grey-darker has-text-white has-text-centered'>
+                                            Status Report</th>
+                                    </tr>
+                                    <tr>
+                                        <th class='has-background-grey-darker has-text-white'>Item</th>
+                                        <th class='has-background-grey-darker has-text-white'>Status</th>
+                                        <th class="has-background-grey-darker has-text-white">Other Info</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan='3'
+                                            class='has-text-weight-bold has-text-centered has-background-grey has-text-white'>
+                                            Rounds
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class='has-text-weight-bold'>Total Rounds</td>
+                                        <td>{{rounds.total}}</td>
+                                        <td class='is-italic is-size-6'>Total number of rounds</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='has-text-weight-bold'>Current Image Repeat Rounds</td>
+                                        <td>{{rounds.roundsThisImageCycle}} of {{rounds.roundsPerImgCycle}}</td>
+                                        <td class='is-italic is-size-6'>For this image, how many times have we run the
+                                            network thru it? Scores are only calculated at the END of one of these
+                                            cycles.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class='has-text-weight-bold'>Current Image Repeat Number</td>
+                                        <td>{{rounds.currImgCycle}} of {{rounds.imgCycles}}</td>
+                                        <td class='is-italic is-size-6'>Which repeat we're on for this particular image.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class='has-text-weight-bold'>Current Meta Cycle</td>
+                                        <td>{{rounds.megaRepeatCurr+1}} of {{rounds.megaRepeatTotal}}</td>
+                                        <td class='is-italic is-size-6'>How many times the entire sequence of images
+                                            repeats.</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan='3'
+                                            class='has-text-weight-bold has-text-centered has-background-grey has-text-white'>
+                                            Image
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class='has-text-weight-bold'>Current Image</td>
+                                        <td><canvas v-bind:style='{width:img.w+"px",height:img.h+"px"}' id='canv'
+                                                :width="img.w" :height="img.h"></canvas> Filename: {{img.filename}}</td>
+                                        <td class='is-italic is-size-6'>Our current image</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='has-text-weight-bold'>Correct Guess</td>
+                                        <td>Should be: {{img.shouldBe}}</td>
+                                        <td class='is-italic is-size-6'>What the network
+                                            should guess.</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan='3'
+                                            class='has-text-weight-bold has-text-centered has-background-grey has-text-white'>
+                                            Scores and Guesses
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class='has-text-weight-bold'>Score</td>
+                                        <td>
+                                            <strong>Correct:</strong>&nbsp;{{totalScores[0]}}<br />
+                                            <strong>Incorrect:</strong>&nbsp;{{totalScores[1]}}
+                                        </td>
+                                        <td class='is-italic is-size-6'>Total number of times our network's gotten it
+                                            correct/incorrect. <br>Note: Don't be alarmed if this looks bad!</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='has-text-weight-bold'>Guesses</td>
+                                        <td>
+                                            <table class="table is-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Digit</th>
+                                                        <th>Guesses</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for='f in fList.base'>
+                                                        <td>{{f}}</td>
+                                                        <td>{{score[f]}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td class='is-italic is-size-6'>Number of times the network has 'guessed' each
+                                            digit.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
                 <br><br>
-                <button class="button" v-on:click='brainCycle()'>click</button>
             </div>
         </div>
+
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <!-- <script src="./js/store.js"></script> -->
-    <script src="./js/main.js"></script>
+    <script src="./js/main.min.js"></script>
 </body>
 
 </html>

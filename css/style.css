@@ -1,3 +1,6 @@
+html,body{
+	background:#000;
+}
 .blocky{
 display:block!important;
 }
@@ -9,14 +12,26 @@ display:block!important;
 .pokey{
 	cursor:pointer;
 }
-.active-border{
-	border:2px solid #000;
+.neur-field{
+	position:absolute;
+	width:100vw;
+	height:120vh;
+	/* z-index: -99; */
+	left:0;
+	pointer-events: none;
+	top:0;
 }
-.peg{
-	width:15px;
-	height:15px;
-	display:inline-block;
-	border-radius:50%;
-	border-width:10px;
-	border-style: solid;
+.neur{
+	position:absolute;
+	width:2px;
+	height:2px;
+	/* box-shadow: 0 0 2px 0.5px #33a; */
+	background:#33a;
+}
+.active-neur{
+	/* box-shadow: 0 0 3px 0.75px #aac; */
+	background:#aac;
+}
+[v-cloak]{
+	display:none;
 }
