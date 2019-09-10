@@ -32,6 +32,36 @@ display:block!important;
 	/* box-shadow: 0 0 3px 0.75px #aac; */
 	background:#aac;
 }
+
+.neuron-examp-box{
+	width:100%;
+	background:#000;
+	padding-top:100px!important;
+	padding-bottom:100px!important;
+	min-height:200px;
+}
+.neuron-examp-box .neuron-examp{
+	position: relative;
+	left:47%;
+	top:45%;
+	border-radius: 50%;
+	width:30px;
+	height:30px;
+	background:#55c
+}
+.neuron-examp-box .neuron-examp.active{
+	background:#99d;
+}
+.neuron-examp-box .neuron-examp .axon{
+	transform-origin: 0%;
+	position: absolute;
+	left:15px;
+	top:15px;
+	height:2px;
+	width:100px;
+	background:#55c;
+}
+
 [v-cloak]{
 	display:none;
 }

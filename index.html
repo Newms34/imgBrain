@@ -46,7 +46,8 @@
                                         <td>
                                             Number of Neurons
                                         </td>
-                                        <td><input type="number" class="number" v-model.number='maxNeuros' min='0' max='10000'>
+                                        <td><input type="number" class="number" v-model.number='maxNeuros' min='400'
+                                                max='10000'>
                                         </td>
                                         <td class='is-size-7'>The number of neurons in your brain. More <i>can</i> mean
                                             a "smarter" brain, but it'll also run more slowly! Note: this
@@ -57,7 +58,8 @@
                                         <td>
                                             Brain Layers
                                         </td>
-                                        <td><input type="number" class="number" v-model.number='layers' min='1' max='100'></td>
+                                        <td><input type="number" class="number" v-model.number='layers' min='1'
+                                                max='100'></td>
                                         <td class='is-size-7'>The number of layers in your brain. Any neuron in a
                                             specific layer of the brain can <i>only</i> connect with neurons outside
                                             that layer, so again, this increases complexity.
@@ -67,21 +69,22 @@
                                         <td>
                                             Percent Connections
                                         </td>
-                                        <td><input type="number" class="number" v-model.number='percCons' min='0' max='100'>
+                                        <td><input type="number" class="number" v-model.number='percCons' min='0'
+                                                max='100'>
                                         </td>
                                         <td class='is-size-7'>The percent of <i>total</i> neurons that this connects to.
                                             Note: using a high percentage here may not always be a good thing!
                                         </td>
                                     </tr>
                                     <tr>
-                                            <td>
-                                                Total Connections
-                                            </td>
-                                            <td>{{totalNeuros}}
-                                            </td>
-                                            <td class='is-size-7'>Total number of connections (synapses) in your brain.
-                                            </td>
-                                        </tr>
+                                        <td>
+                                            Total Connections
+                                        </td>
+                                        <td>{{totalNeuros}}
+                                        </td>
+                                        <td class='is-size-7'>Total number of connections (synapses) in your brain.
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td class='has-background-grey has-text-white' colspan='3'>Scanning</td>
                                     </tr>
@@ -89,8 +92,8 @@
                                         <td>
                                             Times to Repeat Image (per score)
                                         </td>
-                                        <td><input type="number" class="number" v-model.number='rounds.roundsPerImgCycle'
-                                                min='1' max='100'></td>
+                                        <td><input type="number" class="number"
+                                                v-model.number='rounds.roundsPerImgCycle' min='1' max='100'></td>
                                         <td class='is-size-7'>We can scan each image a bunch of times before we
                                             calculate a score (think of it as "strengthening" the randomness of the
                                             initial learning). How many times should we do this?
@@ -100,8 +103,8 @@
                                         <td>
                                             Times to Repeat Image (getting multiple scores)
                                         </td>
-                                        <td><input type="number" class="number" v-model.number='rounds.imgCycles' min='1'
-                                                max='100'></td>
+                                        <td><input type="number" class="number" v-model.number='rounds.imgCycles'
+                                                min='1' max='100'></td>
                                         <td class='is-size-7'>After the above is done, we'll calculate a score, and then
                                             we can scan the <i>same</i> image again. How many times should we do this?
                                         </td>
@@ -225,6 +228,22 @@
                                         </td>
                                         <td class='is-italic is-size-6'>Number of times the network has 'guessed' each
                                             digit.</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan='3'
+                                            class='has-text-weight-bold has-text-centered has-background-grey has-text-white'>
+                                            Example Neuron
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan='3' class='has-text-centered neuron-examp-box'>
+                                            <div class="neuron-examp">
+                                                <div class="axon" v-for='(ax,ind) in brain.layers[0][0].outs' v-bind:style='{"transform":"rotateZ("+(360*ind/brain.layers[0][0].outs.length)+"deg)","background":axHeight(ax)}'></div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{brain.layers[0][0].outs.map(q=>q.strength)}}
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

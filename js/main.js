@@ -64,7 +64,8 @@ class Neuron {
 }
 class Connection {
     constructor(s, t, l, p) {
-        this.strength = p;
+        // this.strength = p;
+        this.strength=Math.random();
         this.from = s;
         this._id = Math.floor(Math.random() * 9999999999999999999).toString(32);
         this.targLayer = l;
@@ -436,7 +437,7 @@ const mainComp = new Vue({
                 }
             });
             //reset brain path for this round
-            console.log('Clearing brain. Image Repeat', self.rounds.roundsThisImageCycle, 'of', self.rounds.roundsPerImgCycle, 'and filename', self.img.filename)
+            // console.log('Clearing brain. Image Repeat', self.rounds.roundsThisImageCycle, 'of', self.rounds.roundsPerImgCycle, 'and filename', self.img.filename)
             self.brain.lastPath = [];
         },
         createBrain:function(){
@@ -457,6 +458,7 @@ const mainComp = new Vue({
             self.brain.layers[0] = new Array(self.img.w * self.img.h).fill(100).map((q, i) => new Neuron(Math.random() * 100, Math.random() * 100, i, 0));
             self.numNeuros = self.img.w * self.img.h;
             const perLayer = Math.floor(((self.maxNeuros - self.numNeuros) / self.layers)); //note: this is every layer BUT the initial one!
+            // console.log('PERLAYERS',perLayer,maxNeuros,self)
             let a = 1;
             for (a; a < self.layers; a++) {
                 self.brain.layers[a] = new Array(perLayer).fill(100).map((q, i) => new Neuron(Math.random() * 100, Math.random() * 100, i, a));
@@ -496,6 +498,11 @@ const mainComp = new Vue({
             console.log(self)
             //end setup
             self.brainReady = true;
+        },
+        
+        axHeight:function(a){
+            const lite = Math.min(1,Math.max(.1,a.strength))*50;
+            return `hsl(240,100%,${lite}%)`
         }
     },
     created: function () {
